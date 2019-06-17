@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Vuejs練習</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="../assets/js/vue.js"></script>
+</head>
+<body>
+    <h1>v-text & v-html</h1>
+    <hr>
+    <div id="app">
+       <spna>{{message}}</spna>
+       <span v-text="message"></span>
+       <span v-html="msgHtml"></span>
+    </div>
+
+    <script type="text/javascript">
+        var app=new Vue({
+            el:'#app',
+            data:{
+                message:'因為炫染由上往下，V-text可以解決網路慢先顯示上面而沒有顯示jscode的情形',
+                msgHtml:'<h2> I am h2</h2>'
+            }
+        })
+    </script>
+
+
+    
+</body>
+</html>

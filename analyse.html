@@ -1,0 +1,468 @@
+<!DOCTYPE>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>
+        Welcome
+    </title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+    <style>
+      body{
+        font-family: "Microsoft JhengHei", "Heiti TC";
+      }
+    </style>
+
+    <style>
+      .colL{
+        border: solid 1px #16bb00;
+        padding: 5px;
+        border-radius: 10px;
+        margin: 5px;
+        cursor: pointer;
+        transition: border .4s ease, background-color .4s ease, color .4s ease;
+      }
+
+      .colL:hover{
+        border: solid 1px #79bd70;
+        background-color: #017d15;
+        color: #fff;
+      }
+
+      .colL.active{
+        border: solid 1px #16bb00;
+        background-color: #87b58e;
+        color: #0d7507;
+      }
+
+      .colL input{
+
+      }
+
+      .colL label{
+        cursor: pointer;
+      }
+
+      .step-desc{
+        background-color: #ddd;
+        padding: 10px 0;
+        text-align: center;
+        transition: background-color .4s ease, color .4s ease;
+        color: #444;
+      }
+
+      .step-desc.active{
+        background-color: #d87a7a;
+        color: #fff;
+        font-weight: 1000;
+      }
+    </style>
+    <!--<script src="//s3-ap-northeast-1.amazonaws.com/justfont-user-script/jf-55647.js"></script>-->
+</head>
+<body>
+
+  <!-- 共通header部分 -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">風力計畫</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+      <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+        <li class="nav-item">
+          <a class="nav-link px-3" href="/"><i class="fas fa-home"></i> 首頁</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link px-3" href="/upload/"><i class="fas fa-file-upload"></i> 資料上傳</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link px-3" href="/chart/"><i class="fas fa-chart-pie"></i> 繪製圖表</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link px-3" href="/analyse/"><i class="far fa-chart-bar"></i> InAnalysis</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="#"><i class="fas fa-user"></i></a>
+        </li>
+        {% if username %}
+        <li class="nav-item">
+          <a class="nav-link" href="/logout/"><i class="fas fa-sign-out-alt"></i> 登出</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="/login/"><i class="fas fa-sign-in-alt"></i> 登入</a>
+        </li>
+        {% endif %}
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container pt-4" id="app">
+
+    <div class="card">
+      <div class="card-header bg-dark text-white">
+        InAnalysis
+      </div>
+      <div class="card-body">
+
+
+        <div v-show="step == 1">
+          
+          <label class="mt-3">請選擇子計畫</label>
+          <select class="form-control mt-2" v-model="plan">
+            <option value="0">選擇子計畫</option>
+            <option value="1">子計畫一</option>
+            <option value="2">子計畫二</option>
+          </select>
+          <button class="btn btn-primary mt-3" v-bind:disabled="plan == '0'" v-on:click="nextStep">下一步</button>
+        </div>
+
+        <div v-show="step == 2">
+            <div>{{ message }}</div>
+          <label class="mt-3">請選擇要進行資料分析的風機</label>
+          <div class="mt-2" style="position:relative; width:100%; padding-top:66.6%">
+            <div style="position:absolute; top:0; left:0; width: 100%; height:100%;">
+              <div id="map" style="width: 100%; height:100%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div v-show="step == 3">
+          <h3 class="mt-3"> <span class="text-danger" v-text="fan"></span> </h3>
+
+          <div class="row">
+
+            <div class="col-12 col-md-6">
+              <label class="mt-5">選擇資料欄位</label>
+              <div class="mt-3">
+                <span v-for="(ele, index) in cols" class="colL" v-bind:class="{'active': ele.selected}">
+                  <input type="checkbox" v-model="ele.selected" v-bind:id="'col'+index"/>
+                  <label v-text="ele.name" v-bind:for="'col'+index"></label>
+                </span>
+              </div>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="mt-5">選擇時間區間</label>
+              <div class="mt-2">
+                <input type="datetime-local" class="form-control" v-model="chartStartTime">
+                <h6 class="text-center">至</h6>
+                <input type="datetime-local" class="form-control" v-model="chartEndTime">
+              </div>
+            </div>
+
+            <div class="col-12 text-center">
+              <button class="btn btn-primary px-3 mt-5" v-on:click="nextStep">資料前處理</button>
+            </div>
+
+          </div>
+        </div>
+
+        <div v-show="step >= 4">
+          <h3 class="mt-3"> <span class="text-danger" v-text="fan"></span> </h3>
+          <div class="row mt-3">
+            <div class="col-12 col-md-4 mt-3 step-desc" v-bind:class="{'active': step == 4}">
+              1. 資料前處理
+            </div>
+            <div class="col-12 col-md-4 mt-3 step-desc" v-bind:class="{'active': step == 5}">
+              2. 特徵值選取
+            </div>
+            <div class="col-12 col-md-4 mt-3 step-desc" v-bind:class="{'active': step == 6}">
+              3. 模型訓練
+            </div>
+          </div>
+
+          <div v-show="step == 4">
+            <label class="mt-5">選擇要正規化的欄位</label>
+            <div>{{ message }}</div>
+            <div class="mt-3">
+              <span v-for="(ele, index) in cols" class="colL" v-bind:class="{'active': ele.selected}">
+                <input type="checkbox" v-model="ele.selected" v-bind:id="'col'+index"/>
+                <label v-text="ele.name" v-bind:for="'col'+index"></label>
+              </span>
+            </div>
+            <div class="col-12 text-center">
+              <button class="btn btn-primary px-3 mt-5"  v-bind:disabled="message != 'ok'"  v-on:click="nextStep">特徵值選取</button>
+            </div>
+          </div>
+
+          <div v-show="step == 5">
+            <label class="mt-5">選取要使用的欄位</label>
+            <div class="mt-3">
+              <span v-for="(ele, index) in cols" class="colL" v-bind:class="{'active': ele.selected}">
+                <input type="checkbox" v-model="ele.selected" v-bind:id="'col'+index"/>
+                <label v-text="ele.name" v-bind:for="'col'+index"></label>
+              </span>
+            </div>
+            <div class="row">
+              <div class="col-4 text-center">
+                <button class="btn btn-primary px-3 mt-5" v-on:click="nextStep">分析程式管理</button>
+              </div>
+              <div class="col-4 text-center">
+                <button class="btn btn-primary px-3 mt-5" v-on:click="nextStep">模型訓練</button>
+              </div>
+              <div class="col-4 text-center">
+                <button class="btn btn-primary px-3 mt-5" v-on:click="nextStep">分析進度欄</button>
+              </div>
+            </div>
+          </div>
+
+          <div v-show="step == 6">
+            <div class="mt-3">
+              <h5>模型誤差值為：0.123</h5>
+              <img class="fluid-image" src="../assets/imgs/fakeRes.png" />
+            </div>
+          </div>
+
+        </div>
+
+
+        <div v-show="step == 9">
+          <div style="width:100%;height:400px;" id="chart"></div>
+        </div>
+
+      </div>
+      <div class="card-footer text-muted">
+        @2018 Content By ICAN_LAB
+      </div>
+    </div>
+
+    <div id="setFan" class="modal" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">選擇確認</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>選擇風機： <span class="text-danger" v-text="fan"></span></p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">重新選擇</button>
+            <button type="button" class="btn btn-primary" v-on:click="nextStep">確定</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+
+</body>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBPq1hNS-hLK2mv7hpDXJnG18c9ovlyHoM&callback=initMap"
+async defer></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script type="text/javascript">
+  var app=new Vue(
+  {
+      el:'#app',
+      data: {
+        message:'',
+        url:'',
+        file_id:'',
+        step: 1,
+        plan: "0",
+        fan: '',
+        cols: [
+          {
+            name: '風速',
+            selected: true,
+          },
+          {
+            name: '風向',
+            selected: true,
+          },
+          {
+            name: '轉速',
+            selected: true,
+          },
+          {
+            name: '電力',
+            selected: true,
+          },
+          {
+            name: '阻力',
+            selected: true,
+          },
+        ],
+        chartStartTime: "2015-06-09T10:00",
+        chartEndTime: "2015-06-09T16:00",
+        uploadData: '',
+      },
+      computed:{
+        selectedCol: function(){
+          var temp = 0;
+          for( var i in this.cols){
+            if(this.cols[i].selected){
+              temp += 1;
+            }
+          }
+          return temp;
+        },
+      },
+      methods:{
+        nextStep: function(){
+         
+          let _this = this
+          this.step++;
+
+          if(this.step == 2){
+            initMap();
+
+          }
+          else if(this.step==3){
+            axios
+                .post('http://140.112.26.237:8003/csv', {
+                  "download_url": "http://140.112.26.237:8002/media/pm2.5Train.zip",
+                  "file_name": "csv_file.csv",
+                  "user_id": "coco",
+                  "project_id": "my_project",
+                  "project_type": "regression",
+                  "stage": "data-preprocess",
+                  "label": "ANS"
+                })
+                .then(function (response) {           
+                  var file_id=response.data.file_id;
+                  var status=response.data.status;
+                  var des=response.data.description;
+                  _this.file_id=file_id;
+                  _this.message=status;
+                  console.log(status+"  "+des+"  ");   
+                });
+
+                
+          }
+          else if(this.step == 4){
+               // console.log(_this.url); 
+              if(this.message=='ok'){
+                axios
+                      .post('http://140.112.26.237:8003/preprocess-save/'+_this.file_id, {
+                        "new_file_name": "pr_file.csv",
+                        "normalize": "MinMaxScaler",
+                        "feature_list": ["O3"] 
+                      })
+                      .then(function (response) { 
+                        var status=response.data.status;
+                        var des=response.data.description;
+                        var file_id=response.data.new_file_id;
+                        console.log(status+"  "+des+"  "+file_id)
+                        
+                      });
+              }
+
+               
+                
+              
+
+
+
+
+
+            var temp = {
+              "chart": {
+                "type":"spline"
+              },
+              "title":{
+                "text":"風機資料"
+              },
+              "xAxis":{
+                "type":"datetime",
+                "dateTimeLabelFormats":{
+                  "month":"%e. %b",
+                  "year":"%b"
+                },
+                "title":{
+                  "text":"Date"
+                }
+              },
+              "yAxis":{},
+              "tooltip":{
+                "headerFormat":"<b>{series.name}</b><br>",
+                "pointFormat":"{point.x:%e. %b}: {point.y:.2f}m"
+              },
+              "plotOptions":{
+                "spline":{
+                  "marker":{"enabled":true}
+                }
+              },
+              "colors":["#6CF","#39F","#06C","#036","#000"],
+              "series":[
+                {
+                  "name":"風速",
+                  "data":[
+                    [1433844600000,-1.5],
+                    [1433845200000,-2.2999999523],
+                    [1433845800000,-1.5000001192],
+                    [1433846400000,0.6999999881],
+                    [1433847000000,1.2000000477],
+                    [1433847600000,-1.9400000572],
+                    [1433848200000,13.1666669846],
+                    [1433848800000,3.2000000477],
+                    [1433849400000,-6.3000001907],
+                    [1433850000000,-0.9000000358],
+                    [1433850600000,0.200000003],
+                    [1433851200000,-6.4000000954],
+                    [1433851800000,3.4000000954],
+                    [1433852400000,-1.3999999762],
+                    [1433853000000,-2.2999999523],
+                    [1433853600000,2.7999999523],
+                    [1433854200000,-12.6999998093]
+                  ],
+                  "_colorIndex":0,"_symbolIndex":0
+                }
+              ]
+            };
+            Highcharts.chart('chart', temp);
+          }
+
+          $('#setFan').modal('hide');
+        },
+      },
+   })
+
+
+   var map;
+   function initMap() {
+     var center = {lng: 120.582, lat: 25.583};
+     var fanImg = 'http://35.201.247.245/assets/imgs/fan_s.png';
+     var fake1 = {lng: 121.75, lat: 25.143};
+     var fake2 = {lng: 121.752, lat: 25.153};
+     map = new google.maps.Map(document.getElementById('map'), {
+       center: fake1,
+       zoom: 14
+     });
+     var fmarker1 = new google.maps.Marker({position: fake1, map: map, icon: fanImg});
+     fmarker1.addListener('click', function(evt){
+       app.fan = '測試風機一';
+       selectFanDialog();
+     });
+     var fmarker2 = new google.maps.Marker({position: fake2, map: map, icon: fanImg});
+     fmarker2.addListener('click', function(evt){
+       app.fan = '測試風機二';
+       selectFanDialog();
+     });
+   }
+
+   function selectFanDialog(){
+     $('#setFan').modal({
+       keyboard: false
+     });
+   }
+</script>

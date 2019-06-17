@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>vue.set全局操作</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="../assets/js/vue.js"></script>
+</head>
+<body>
+    <h1>Vue.set</h1>
+    <p>
+        Vue.set 的作用就是在構造器外部操作構造器內部的數據、
+        屬性或者方法。比如在vue構造器內部定義了一個count為1的數據，
+        我們在構造器外部定義了一個方法，要每次點擊按鈕給值加1，就需要用到Vue.set。
+    </p>
+    <hr>
+    <div id="app">
+        {{count}}
+        <ul>
+            <li v-for="item in arr">{{item}}</li>
+        </ul>
+    </div>
+    <p><button onclick="add()">add</button></p>
+
+    <script type="text/javascript">
+        function add(){
+            //  Vue.set(outData,'count',3);
+            //  app.count++;
+            //   outData.count++;
+            app.arr[1]='ddd';//改變下標沒辦法監聽到
+            Vue.set(app.arr,1,'dd');//解決
+        }
+        var outData={
+            count:1,
+            // goods:'car',
+            arr:['aaa','bbb','ccc']
+        }
+        var app=new Vue({
+            el:'#app',
+            data:outData
+        })
+    </script>
+
+
+    
+</body>
+</html>

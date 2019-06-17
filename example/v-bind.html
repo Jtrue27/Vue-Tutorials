@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Vuejs練習</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="../assets/js/vue.js"></script>
+</head>
+<body>
+    <h1>v-bind</h1>
+    <hr>
+    <div id="app">
+        <img v-bind:src="imgSrc" width="200px">
+        <br/>
+        <a v-bind:href="aurl" target="_blank">Google</a>
+        <hr>
+        <div :class="className">1.綁訂class</div>
+        <div v-bind:class="{classA:isOk}">2.綁訂class中的判斷</div>
+        <div v-bind:class="[classA,classB]">3.綁訂多個class</div>
+        <div v-bind:class="isOk?classA:classB">4.綁訂三元判斷式class</div>
+        <div v-bind:style="{color:red,fontSize:font}">5.綁訂style</div>
+        <div v-bind:style="styleObject">6.用對象綁訂style</div>
+        
+    </div>
+  
+    <style>
+        .classA{
+            color:red;
+        }
+        .classB{
+            font-size:150%
+        }
+    
+    </style>
+
+    <script type="text/javascript">
+        var app=new Vue({
+            el:'#app',
+            data:{
+                imgSrc:'http://140.112.26.237:8003/model-preview/images/9316e304-a43a-11e8-b47a-e0d55e478f3a_O3_ANS.jpg',
+                aurl:'https://www.google.com.tw/',
+                isOk:true,
+                className:'classA',
+                classA:'classA',
+                classB:'classB',
+                red:'red',
+                font:'30px',
+                styleObject:{
+                    fontSize:'24px',
+                    color:'green'
+                }
+            }
+        })
+    </script>
+
+
+    
+</body>
+</html>

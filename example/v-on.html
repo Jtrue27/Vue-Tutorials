@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Vuejs練習</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="../assets/js/vue.js"></script>
+</head>
+<body>
+    <h1>V-on</h1>
+    <hr>
+    <div id="app">
+       本場比賽得分: {{point}}
+       <p>
+           <button v-on:click="plus" >加分</button>
+           <button @click="minus" >減分</button><br/>
+           <input type="text" v-on:keyup.107="onEnter" v-model="point2">
+           
+       </p>
+    </div>
+
+    <script type="text/javascript">
+        var app=new Vue({
+            el:'#app',
+            data:{
+                point:0,
+                point2:1,
+            },
+            methods:{
+                plus:function(){
+                    this.point++;
+                },
+                minus:function(){
+                    this.point--;
+                },
+                onEnter:function(){
+                    this.point=this.point+parseInt(this.point2);
+                }
+               
+            }
+
+        })
+    </script>
+
+
+    
+</body>
+</html>
